@@ -31,9 +31,8 @@ inline void TLC_GS() {
 	CBI(VPROG_PORT,VPROG);
 }
 
-void TLC_Send_GS(uint8_t *data) {
+void TLC_Send_GS(const uint8_t *data) {
 	uint8_t i;
-	uint32_t val;
 	uint16_t byte1, byte2;
 
 	for(i=0; i<8; i++) {
@@ -42,10 +41,10 @@ void TLC_Send_GS(uint8_t *data) {
 
 		SPDR = (byte1 >> 4) & 0xff;
 		while (!(SPSR & (1<<SPIF)));
-		
+
 		SPDR = ( (byte1 << 4) & 0xf0 ) | ((byte2 >> 8) & 0x0f );
 		while (!(SPSR & (1<<SPIF)));
-		
+
 		SPDR = byte2 & 0xff;
 		while (!(SPSR & (1<<SPIF)));
 	}
