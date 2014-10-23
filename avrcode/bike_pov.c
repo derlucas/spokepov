@@ -12,7 +12,8 @@ volatile int8_t cycles=70;			//number of repetition of each line, will be contro
 volatile uint8_t matrix_step=0;			//current matrix step
 volatile uint8_t sensor_prev=1, sensor=1;	//for detecting the edge
 volatile uint8_t spins=0;			//for the feedback loop
-
+volatile uint8_t turns_left=turns_per_frame;
+volatile uint8_t current_frame = 0;
 
 
 int main(void) {
@@ -47,22 +48,22 @@ int main(void) {
 
 			//turn off all colours
 			COLOUR_PORT &= ~((1<<COLOUR_BLUE)|(1<<COLOUR_RED)|(1<<COLOUR_GREEN));
-			
-			switch(colour){
+
+			switch(colour) {
 				case 0:	//lighting up the BLUES, while sending the REDS
 					SBI(COLOUR_PORT, COLOUR_BLUE);
 					CBI(BLANK_PORT, BLANK);
-					TLC_Send_GS(red[matrix_step]);
+					TLC_Send_GS(green[matrix_step+current_frame*wheel_divisions]);
 					break;
 				case 1: //lighting up the REDS, while sending the GREENS
 					SBI(COLOUR_PORT, COLOUR_RED);
 					CBI(BLANK_PORT, BLANK);
-					TLC_Send_GS(green[matrix_step]);
+					TLC_Send_GS(red[matrix_step+current_frame*wheel_divisions]);
 					break;
 				case 2: //lighting up the GREENS, while sending the BLUES
 					SBI(COLOUR_PORT, COLOUR_GREEN);
 					CBI(BLANK_PORT, BLANK);
-					TLC_Send_GS(blue[matrix_step]);
+					TLC_Send_GS(blue[matrix_step+current_frame*wheel_divisions]);
 					break;
 			}
 			ready_to_send = 0; //clearing GSclock flag
@@ -77,7 +78,15 @@ int main(void) {
 
 					if(matrix_step >= wheel_divisions)  {
 						spins++;
-						matrix_step = 0;	
+						matrix_step = 0;
+						turns_left--;
+						if (turns_left <=0)
+						{
+							turns_left =
+								turns_per_frame;
+							current_frame =
+								(current_frame+1)%frames;
+						}
 					}
 				}
 			}
