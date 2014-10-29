@@ -6,15 +6,19 @@
 #include "tlc5940.h"
 #include "data.h"
 
-
-
 volatile int8_t cycles=70;			//number of repetition of each line, will be controlled by sensor feedback
 volatile uint8_t matrix_step=0;			//current matrix step
 volatile uint8_t sensor_prev=1, sensor=1;	//for detecting the edge
 volatile uint8_t spins=0;			//for the feedback loop
-volatile uint8_t turns_left=turns_per_frame;
-volatile uint8_t current_frame = 0;
 
+/* Note to animations:
+ * There is no syncronisation between multiple spokePovs, so be aware that they
+ * display different content in case they miss some wheel turns.
+ */
+#if defined frames && defined turns_per_frame
+volatile uint8_t turns_left=turns_per_frame;
+#endif
+volatile uint8_t current_frame = 0;
 
 int main(void) {
 	uint8_t colour=0, number_cycles=0;
@@ -79,6 +83,7 @@ int main(void) {
 					if(matrix_step >= wheel_divisions)  {
 						spins++;
 						matrix_step = 0;
+#if defined frames && defined turns_per_frame	// if no animation, then current_frame will always be 0
 						turns_left--;
 						if (turns_left <=0)
 						{
@@ -87,6 +92,7 @@ int main(void) {
 							current_frame =
 								(current_frame+1)%frames;
 						}
+#endif
 					}
 				}
 			}
