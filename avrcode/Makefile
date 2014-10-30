@@ -1,6 +1,7 @@
 MCU = atmega168
 
 F_OSC = 20000000
+F_CPU = $(F_OSC)
 
 FORMAT = ihex
 TARGET = bike_pov
@@ -45,8 +46,7 @@ CFLAGS += -Wall -Wstrict-prototypes
 CFLAGS += -Wa,-adhlns=$(<:.c=.lst)
 CFLAGS += $(patsubst %,-I%,$(EXTRAINCDIRS))
 CFLAGS += $(CSTANDARD)
-CFLAGS += -DF_OSC=$(F_OSC)
-
+CFLAGS += -DF_CPU=$(F_CPU)
 
 
 # Assembler flags.

@@ -37,12 +37,12 @@
 //---------------------------------------------------------------
 
 
-void TLC_Init();
-void TLC_Activate();
-void TLC_Deactivate();
-void TLC_GS();
-void TLC_DC();
-void TLC_Send_GS(uint8_t *data);
+void TLC_Init(void);
+void TLC_Activate(void);
+void TLC_Deactivate(void);
+void TLC_GS(void);
+void TLC_DC(void);
+void TLC_Send_GS(const uint8_t *data);
 void TLC_Send_GS_Value(uint8_t data);
 void TLC_Send_DC_Value(uint8_t data);
 
